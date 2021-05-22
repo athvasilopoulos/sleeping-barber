@@ -5,18 +5,19 @@ public class BarberRoom {
 	private WaitingRoom wroom;
 	private int time;
 	private Barber barber;
-	
+
 	public BarberRoom(WaitingRoom wroom) {
 		chair = true;
 		this.wroom = wroom;
 	}
+
 	public void setBarber(Barber barber) {
 		barberAvailable = true;
 		this.barber = barber;
 	}
-	
-	public synchronized void getHaircut(Person person,int time) {
-		while(!chair || !barberAvailable) {
+
+	public synchronized void getHaircut(Person person, int time) {
+		while (!chair || !barberAvailable) {
 			try {
 				wait();
 			} catch (InterruptedException e) {
@@ -30,17 +31,17 @@ public class BarberRoom {
 		notifyAll();
 		try {
 			wait();
-		}
-		catch(InterruptedException e) {
+		} catch (InterruptedException e) {
 			System.err.println(e.toString());
 		}
 		person.changePos(0);
-		if(barber.getCuts()!=10) barberAvailable = true;
+		if (barber.getCuts() != 10)
+			barberAvailable = true;
 		notifyAll();
 	}
-	
+
 	public synchronized void giveHaircut(Barber barber) {
-		while(chair) {
+		while (chair) {
 			barber.changePos(1);
 			try {
 				wait();
@@ -59,7 +60,7 @@ public class BarberRoom {
 		barber.addCuts();
 		notifyAll();
 	}
-	
+
 	public synchronized void wokeUp() {
 		barberAvailable = true;
 		barber.resetCuts();
